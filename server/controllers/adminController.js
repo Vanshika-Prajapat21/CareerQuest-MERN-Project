@@ -11,23 +11,49 @@ const { removeApplications } = require("../utils/files");
 // GET /api/admin/stats
 const getStats = asyncHandler(async (req, res) => {
   await expireOldOpportunities();
-  const [totalUsers, totalOpportunities, activeOpportunities, expiredOpportunities, totalApplications, openReports, popularCategories, byType] =
-    await Promise.all([
-      User.countDocuments({ role: "student" }),
-      Opportunity.countDocuments(),
-      Opportunity.countDocuments({ status: "active" }),
-      Opportunity.countDocuments({ status: "expired" }),
-      Application.countDocuments(),
-      Report.countDocuments({ status: "open" }),
-      Opportunity.aggregate([{ $group: { _id: "$category", count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 6 }]),
-      Opportunity.aggregate([{ $group: { _id: "$type", count: { $sum: 1 } } }, { $sort: { count: -1 } }]),
-    ]);
+  const [
+    totalUsers,
+    totalOpportunities,
+    activeOpportunities,
+    expiredOpportunities,
+    totalApplications,
+    openReports,
+    popularCategories,
+    byType,
+  ] = await Promise.all([
+    User.countDocuments({ role: "student" }),
+    Opportunity.countDocuments(),
+    Opportunity.countDocuments({ status: "active" }),
+    Opportunity.countDocuments({ status: "expired" }),
+    Application.countDocuments(),
+    Report.countDocuments({ status: "open" }),
+    Opportunity.aggregate([
+      { $group: { _id: "$category", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 6 },
+    ]),
+    Opportunity.aggregate([
+      { $group: { _id: "$type", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]),
+  ]);
 
-  res.json({ totalUsers, totalOpportunities, activeOpportunities, expiredOpportunities, totalApplications, openReports, popularCategories, byType });
+  res.json({
+    totalUsers,
+    totalOpportunities,
+    activeOpportunities,
+    expiredOpportunities,
+    totalApplications,
+    openReports,
+    popularCategories,
+    byType,
+  });
 });
 
 // GET /api/admin/users
-const getUsers = asyncHandler(async (req, res) => res.json(await User.find().sort({ createdAt: -1 })));
+const getUsers = asyncHandler(async (req, res) =>
+  res.json(await User.find().sort({ createdAt: -1 })),
+);
 
 // PUT /api/admin/users/:id/role
 const updateUserRole = asyncHandler(async (req, res) => {
@@ -39,7 +65,11 @@ const updateUserRole = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Invalid role");
   }
-  const user = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { new: true });
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { role: req.body.role },
+    { new: true },
+  );
   if (!user) {
     res.status(404);
     throw new Error("User not found");
@@ -69,13 +99,20 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 // GET /api/admin/reports
 const getReports = asyncHandler(async (req, res) => {
-  const reports = await Report.find().sort({ createdAt: -1 }).populate("userId", "name email").populate("opportunityId", "title organization status");
+  const reports = await Report.find()
+    .sort({ createdAt: -1 })
+    .populate("userId", "name email")
+    .populate("opportunityId", "title organization status");
   res.json(reports.filter((r) => r.opportunityId));
 });
 
 // PUT /api/admin/reports/:id  -> mark resolved
 const resolveReport = asyncHandler(async (req, res) => {
-  const report = await Report.findByIdAndUpdate(req.params.id, { status: "resolved" }, { new: true });
+  const report = await Report.findByIdAndUpdate(
+    req.params.id,
+    { status: "resolved" },
+    { new: true },
+  );
   if (!report) {
     res.status(404);
     throw new Error("Report not found");
@@ -89,4 +126,12 @@ const deleteReport = asyncHandler(async (req, res) => {
   res.json({ message: "Report deleted" });
 });
 
-module.exports = { getStats, getUsers, updateUserRole, deleteUser, getReports, resolveReport, deleteReport };
+module.exports = {
+  getStats,
+  getUsers,
+  updateUserRole,
+  deleteUser,
+  getReports,
+  resolveReport,
+  deleteReport,
+};

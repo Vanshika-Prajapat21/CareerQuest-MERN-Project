@@ -2,8 +2,10 @@ import { getSafeApplyUrl } from "./url.js";
 
 // Decides what the "Apply Now" button does. Pure function: no React, no network.
 export const getApplyAction = ({ opp, user }) => {
-  if (opp.application?.type === "Internal") return { kind: "applied", applicationId: opp.application._id };
-  if (opp.status === "expired" || new Date(opp.deadline) < new Date()) return { kind: "closed" };
+  if (opp.application?.type === "Internal")
+    return { kind: "applied", applicationId: opp.application._id };
+  if (opp.status === "expired" || new Date(opp.deadline) < new Date())
+    return { kind: "closed" };
   if (!user) return { kind: "login" };
   if (user.role !== "student") return { kind: "not-student" };
 

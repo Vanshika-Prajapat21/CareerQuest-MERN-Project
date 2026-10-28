@@ -10,6 +10,7 @@ const STUDENT_LINKS = [
   ["/student/applications", "📋", "My Applications"],
   ["/student/notifications", "🔔", "Notifications"],
   ["/student/profile", "👤", "Profile"],
+  ["/student/portfolio", "🗂️", "My Career Portfolio"],
   ["/student/settings", "⚙️", "Settings"],
 ];
 

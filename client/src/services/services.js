@@ -70,3 +70,11 @@ export const adminApi = {
   updateApplicationStatus: (id, status) => api.put(`/admin/applications/${id}/status`, { status }),
   applicationResume: (id) => api.get(`/admin/applications/${id}/resume`, { responseType: "blob" }),
 };
+
+
+export const portfolioApi = {
+  list: (params) => api.get("/portfolio", { params }),
+  create: (formData) => api.post("/portfolio", formData),
+  update: (id, formData) => api.put(`/portfolio/${id}`, formData),
+  remove: (id) => api.delete(`/portfolio/${id}`),
+};

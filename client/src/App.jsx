@@ -20,6 +20,7 @@ import Saved from "./pages/student/Saved";
 import MyApplications from "./pages/student/MyApplications";
 import Notifications from "./pages/student/Notifications";
 import Settings from "./pages/student/Settings";
+import MyCareerPortfolio from "./pages/student/MyCareerPortfolio";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageOpportunities from "./pages/admin/ManageOpportunities";
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="applications/:id" element={<ApplicationDetails />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="portfolio" element={<MyCareerPortfolio />} />
         <Route path="settings" element={<Settings />} />
       </Route>
 
